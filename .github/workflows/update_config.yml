@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5 # Обновлено до v5 для поддержки Node 24
 
       - name: Download and clean VPN config
         run: |
-          # Скачиваем оригинальный файл с помощью wget (делает до 5 попыток при сбое DNS)
-          wget --tries=5 --retry-connrefused --waitretry=2 -qO raw_config.txt https://githubusercontent.com
+          # Скачиваем файл через стабильное прокси-зеркало jsDelivr в обход сетевых сбоев
+          wget --tries=5 --retry-connrefused --waitretry=3 -qO raw_config.txt https://jsdelivr.net
           
           # Удаляем первые 6 строк гарантированно
           sed '1,6d' raw_config.txt > vless_clean.txt
@@ -25,4 +25,4 @@ jobs:
           git config --global user.name "GitHub Action"
           git config --global user.email "actions@github.com"
           git add vless_clean.txt
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update VPN config using wget" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update VPN config via CDN mirror" && git push)

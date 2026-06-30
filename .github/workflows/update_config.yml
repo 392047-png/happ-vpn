@@ -14,12 +14,15 @@ jobs:
 
       - name: Download and clean VPN config
         run: |
-          # Скачиваем оригинальный файл (ссылка на raw-версию)
-          curl -s https://githubusercontent.com | tail -n +7 > vless_clean.txt
+          # Скачиваем оригинальный файл
+          curl -s https://githubusercontent.com > raw_config.txt
+          
+          # Удаляем первые 6 строк гарантированно (sed работает с любыми переносами строк)
+          sed '1,6d' raw_config.txt > vless_clean.txt
 
       - name: Commit and push changes
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "actions@github.com"
           git add vless_clean.txt
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update VPN config without first 6 lines" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update VPN config using sed" && git push)

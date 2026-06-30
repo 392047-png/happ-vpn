@@ -5,12 +5,16 @@ on:
     - cron: '0 */4 * * *' # Запуск каждые 4 часа
   workflow_dispatch: # Позволяет запускать скрипт вручную
 
+# Принудительно выдаем права на запись файлов прямо внутри кода
+permissions:
+  contents: write
+
 jobs:
   update-config:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # Обновлено до v5 для поддержки Node 24
+        uses: actions/checkout@v5
 
       - name: Download and clean VPN config
         run: |
